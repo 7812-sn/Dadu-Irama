@@ -3,1306 +3,254 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Dadu Irama</title>
-
+    <title>RhythmDice AI - Inovasi Pendidikan Muzik</title>
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
         body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0984e3, #6c5ce7);
             margin: 0;
-            font-family: Arial, sans-serif;
-            background: #eef2f7;
-            color: #222;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 900px;
-            margin: auto;
-            padding: 30px 0;
-        }
-
-        .title {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .title h1 {
-            margin-bottom: 8px;
-            font-size: 40px;
-        }
-
-        .title p {
-            font-size: 18px;
-            color: #555;
-        }
-
-        .box {
-            background: white;
-            padding: 25px;
-            margin-bottom: 20px;
-            border-radius: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-        }
-
-        .box h2 {
-            text-align: center;
-            margin-top: 0;
-        }
-
-        .buttons {
+            padding: 20px;
             display: flex;
             justify-content: center;
-            gap: 12px;
-            flex-wrap: wrap;
+            align-items: center;
+            min-height: 100vh;
+            color: #2d3436;
         }
-
-        button {
-            padding: 13px 22px;
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 { color: #0984e3; margin-bottom: 5px; font-size: 26px; }
+        .subtitle { font-size: 14px; color: #636e72; margin-bottom: 20px; }
+        .btn {
+            background-color: #00b894;
+            color: white;
             border: none;
-            border-radius: 12px;
+            padding: 12px 25px;
             font-size: 16px;
             font-weight: bold;
+            border-radius: 50px;
             cursor: pointer;
+            transition: 0.3s;
+            margin: 10px 5px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-
-        button:hover {
-            opacity: 0.85;
-        }
-
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        #startButton {
-            background: #2563eb;
-            color: white;
-        }
-
-        #rollButton {
-            background: #111827;
-            color: white;
-        }
-
-        #listenButton {
-            background: #16a34a;
-            color: white;
-        }
-
-        #clapButton {
-            background: #dc2626;
-            color: white;
-        }
-
-        .diceArea {
-            display: flex;
-            justify-content: center;
-            margin: 25px 0;
-        }
-
-        .dice {
-            width: 120px;
-            height: 120px;
-            border-radius: 20px;
-            background: #111827;
-            color: white;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            font-size: 65px;
-            font-weight: bold;
-
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-        }
-
-        .spin {
-            animation: spinDice 0.7s ease;
-        }
-
-        @keyframes spinDice {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            50% {
-                transform: rotate(180deg) scale(1.2);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        .rhythm {
-            min-height: 120px;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
+        .btn:hover { background-color: #00a884; transform: translateY(-2px); }
+        .btn-mic { background-color: #e17055; }
+        .btn-mic:hover { background-color: #d63031; }
+        .dice-box {
             font-size: 60px;
-            font-weight: bold;
-
-            letter-spacing: 12px;
-
-            text-align: center;
+            margin: 15px 0;
+            background: #f1f2f6;
+            border-radius: 15px;
+            padding: 20px;
+            display: inline-block;
+            min-width: 100px;
+            border: 2px dashed #74b9ff;
         }
-
-        .rhythmNames {
-            text-align: center;
-            font-size: 18px;
-            color: #555;
-            margin-top: 10px;
+        .rhythm-display {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 6px solid #0984e3;
+            text-align: left;
         }
-
-        .instruction {
-            text-align: center;
-            font-size: 18px;
-            line-height: 1.6;
-        }
-
-        .status {
-            text-align: center;
-            font-size: 21px;
-            font-weight: bold;
-
-            padding: 18px;
-            border-radius: 12px;
-
-            background: #f3f4f6;
-            margin-top: 20px;
-        }
-
-        .result {
-            text-align: center;
-            font-size: 30px;
-            font-weight: bold;
-
-            margin-top: 15px;
-        }
-
-        .score {
-            text-align: center;
-            font-size: 22px;
-            margin-top: 10px;
-        }
-
-        .progress {
+        .rhythm-title { font-weight: bold; color: #2d3436; font-size: 18px; }
+        .rhythm-desc { color: #636e72; font-size: 14px; margin-top: 5px; }
+        
+        /* Volume Meter Live Style */
+        .meter-container {
+            background: #dfe6e9;
+            border-radius: 10px;
+            height: 16px;
             width: 100%;
-            height: 14px;
-
-            background: #e5e7eb;
-
-            border-radius: 20px;
-
+            margin: 15px 0;
             overflow: hidden;
-            margin-top: 20px;
+            display: none;
         }
-
-        .progressBar {
-            width: 0%;
+        .meter-bar {
             height: 100%;
-            background: #2563eb;
-            transition: width 0.1s linear;
+            width: 0%;
+            background: linear-gradient(90deg, #00b894, #fdcb6e, #d63031);
+            transition: width 0.05s ease;
         }
-
-        .history {
-            margin-top: 15px;
+        .feedback {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 10px;
         }
-
-        .historyItem {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .noteInfo {
-            text-align: center;
-            line-height: 1.8;
-            color: #444;
-        }
-
-        @media (max-width: 600px) {
-
-            .title h1 {
-                font-size: 30px;
-            }
-
-            .rhythm {
-                font-size: 42px;
-                letter-spacing: 5px;
-            }
-
-            .dice {
-                width: 100px;
-                height: 100px;
-                font-size: 50px;
-            }
-        }
+        .success { background-color: #55efc4; color: #00b894; }
+        .try-again { background-color: #ffeaa7; color: #d63031; }
     </style>
 </head>
-
 <body>
 
 <div class="container">
+    <h1>🎵 RhythmDice AI</h1>
+    <div class="subtitle">Alat Inovasi Pintar Pengesanan Irama Muzik</div>
 
-    <!-- TITLE -->
-    <div class="title">
-
-        <h1>🎵 DADU IRAMA 🎲</h1>
-
-        <p>
-            Aktiviti pembelajaran irama untuk murid sekolah rendah
-        </p>
-
+    <button class="btn" onclick="rollDice()">🎲 Baling Dadu Mula</button>
+    
+    <div>
+        <div id="diceResult" class="dice-box">🎲</div>
     </div>
 
-
-    <!-- GAME CONTROL -->
-    <div class="box">
-
-        <h2>1. Mula Aktiviti</h2>
-
-        <p class="instruction">
-            Tekan <b>Mula</b> kemudian baling dadu untuk mendapatkan
-            corak irama.
-        </p>
-
-        <div class="buttons">
-
-            <button id="startButton">
-                ▶ Mula
-            </button>
-
-            <button id="rollButton" disabled>
-                🎲 Baling Dadu
-            </button>
-
-        </div>
-
-        <div class="diceArea">
-
-            <div id="dice" class="dice">
-                ?
-            </div>
-
-        </div>
-
+    <div id="rhythmCard" class="rhythm-display" style="display:none;">
+        <div id="rhythmTitle" class="rhythm-title">Corak Irama: -</div>
+        <div id="rhythmDesc" class="rhythm-desc">Not: -</div>
     </div>
 
-
-    <!-- RHYTHM -->
-    <div class="box">
-
-        <h2>2. Corak Irama</h2>
-
-        <div id="rhythm" class="rhythm">
-            Baling dadu dahulu
-        </div>
-
-        <div id="rhythmNames" class="rhythmNames">
-        </div>
-
-        <div class="buttons" style="margin-top:20px;">
-
-            <button id="listenButton" disabled>
-                🔊 Dengar Corak
-            </button>
-
-        </div>
-
+    <!-- Live VU Meter untuk semak mic -->
+    <div id="meterContainer" class="meter-container">
+        <div id="meterBar" class="meter-bar"></div>
     </div>
 
+    <button id="micBtn" class="btn btn-mic" onclick="startListening()" style="display:none;" disabled>🎙️ Rakam Tepukan</button>
 
-    <!-- NOTES INFORMATION -->
-    <div class="box">
-
-        <h2>Nilai Not</h2>
-
-        <div class="noteInfo">
-
-            <p>
-                <b>𝅝 Semibreve</b> = 4 beat
-            </p>
-
-            <p>
-                <b>𝅗𝅥 Minim</b> = 2 beat
-            </p>
-
-            <p>
-                <b>♩ Crotchet</b> = 1 beat
-            </p>
-
-            <p>
-                <b>♪ Quaver</b> = 1/2 beat
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <!-- CLAP ACTIVITY -->
-    <div class="box">
-
-        <h2>3. Tepuk Corak Irama</h2>
-
-        <p class="instruction">
-
-            Tekan butang di bawah dan tepuk corak irama yang
-            diberikan.
-
-            <br>
-
-            Sistem akan menggunakan mikrofon untuk mengesan
-            tepukan anda.
-
-        </p>
-
-        <div class="buttons">
-
-            <button id="clapButton" disabled>
-                🎙️ Mula Tepuk
-            </button>
-
-        </div>
-
-
-        <div class="progress">
-
-            <div id="progressBar" class="progressBar">
-            </div>
-
-        </div>
-
-
-        <div id="status" class="status">
-
-            Aktiviti belum bermula.
-
-        </div>
-
-
-        <div id="result" class="result">
-        </div>
-
-
-        <div id="score" class="score">
-        </div>
-
-    </div>
-
-
-    <!-- HISTORY -->
-    <div class="box">
-
-        <h2>4. Rekod Percubaan</h2>
-
-        <div id="history" class="history">
-
-            Belum ada percubaan.
-
-        </div>
-
-    </div>
-
+    <div id="feedbackBox"></div>
 </div>
 
-
 <script>
-
-    /* =========================================================
-       CORAK IRAMA
-       Setiap corak mesti mempunyai jumlah 4 beat
-       ========================================================= */
-
     const patterns = {
-
-        1: {
-            symbols: ["𝅝"],
-            names: ["Semibreve"],
-            beats: [0]
-        },
-
-        2: {
-            symbols: ["𝅗𝅥", "𝅗𝅥"],
-            names: ["Minim", "Minim"],
-            beats: [0, 2]
-        },
-
-        3: {
-            symbols: ["♩", "♩", "♩", "♩"],
-            names: ["Crotchet", "Crotchet", "Crotchet", "Crotchet"],
-            beats: [0, 1, 2, 3]
-        },
-
-        4: {
-            symbols: ["𝅗𝅥", "♩", "♩"],
-            names: ["Minim", "Crotchet", "Crotchet"],
-            beats: [0, 2, 3]
-        },
-
-        5: {
-            symbols: ["♩", "♪", "♪", "𝅗𝅥"],
-            names: ["Crotchet", "Quaver", "Quaver", "Minim"],
-            beats: [0, 1, 1.5, 2]
-        },
-
-        6: {
-            symbols: ["♪", "♪", "♪", "♪", "𝅗𝅥", "𝅗𝅥"],
-            names: [
-                "Quaver",
-                "Quaver",
-                "Quaver",
-                "Quaver",
-                "Minim",
-                "Minim"
-            ],
-            beats: [0, 0.5, 1, 1.5, 2, 3]
-        }
-
+        1: { name: "Corak 1 (Semibrif)", targetClaps: 1, desc: "Semibrif (Ta-a-a-a) - 1 Tepukan Panjang" },
+        2: { name: "Corak 2 (Minim)", targetClaps: 2, desc: "Minim, Minim (Ta-a, Ta-a) - 2 Tepukan" },
+        3: { name: "Corak 3 (Krochet)", targetClaps: 4, desc: "Krochet x4 (Ta, Ta, Ta, Ta) - 4 Tepukan Sekata" },
+        4: { name: "Corak 4 (Kuaver Campur)", targetClaps: 6, desc: "Kuaver & Krochet (Ti-ti, Ti-ti, Ta, Ta)" },
+        5: { name: "Corak 5 (Minim & Krochet)", targetClaps: 3, desc: "Minim, Krochet, Krochet (Ta-a, Ta, Ta)" },
+        6: { name: "Corak 6 (Kuaver Penuh)", targetClaps: 8, desc: "8 Kuaver (Ti-ti Ti-ti Ti-ti Ti-ti) - 8 Tepukan" }
     };
-
-
-    /* =========================================================
-       VARIABLES
-       ========================================================= */
 
     let currentPattern = null;
 
-    let audioContext = null;
-
-    let microphone = null;
-
-    let analyser = null;
-
-    let recording = false;
-
-    let clapTimes = [];
-
-    let startTime = 0;
-
-    let animationID = null;
-
-    let lastClapTime = 0;
-
-    let attemptHistory = [];
-
-
-    const BPM = 60;
-
-    const BEAT_TIME = 60000 / BPM;
-
-    const TOLERANCE = 350;
-
-
-    /* =========================================================
-       GET HTML ELEMENTS
-       ========================================================= */
-
-    const startButton =
-        document.getElementById("startButton");
-
-    const rollButton =
-        document.getElementById("rollButton");
-
-    const listenButton =
-        document.getElementById("listenButton");
-
-    const clapButton =
-        document.getElementById("clapButton");
-
-    const dice =
-        document.getElementById("dice");
-
-    const rhythm =
-        document.getElementById("rhythm");
-
-    const rhythmNames =
-        document.getElementById("rhythmNames");
-
-    const status =
-        document.getElementById("status");
-
-    const result =
-        document.getElementById("result");
-
-    const score =
-        document.getElementById("score");
-
-    const progressBar =
-        document.getElementById("progressBar");
-
-    const history =
-        document.getElementById("history");
-
-
-    /* =========================================================
-       START BUTTON
-       ========================================================= */
-
-    startButton.addEventListener("click", async function() {
-
-        startButton.disabled = true;
-
-        rollButton.disabled = false;
-
-        status.innerHTML =
-            "Aktiviti bermula. 🎵 Baling dadu!";
-
-        await createAudio();
-
-    });
-
-
-    /* =========================================================
-       CREATE AUDIO
-       ========================================================= */
-
-    async function createAudio() {
-
-        if (!audioContext) {
-
-            audioContext =
-                new (
-                    window.AudioContext ||
-                    window.webkitAudioContext
-                )();
-
-        }
-
-        if (audioContext.state === "suspended") {
-
-            await audioContext.resume();
-
-        }
-
+    function rollDice() {
+        const diceEl = document.getElementById("diceResult");
+        diceEl.innerText = "🌀";
+        
+        setTimeout(() => {
+            const roll = Math.floor(Math.random() * 6) + 1;
+            diceEl.innerText = roll;
+            
+            currentPattern = patterns[roll];
+            document.getElementById("rhythmTitle").innerText = currentPattern.name;
+            document.getElementById("rhythmDesc").innerText = "Sila tepuk: " + currentPattern.desc;
+            document.getElementById("rhythmCard").style.display = "block";
+            
+            const micBtn = document.getElementById("micBtn");
+            micBtn.style.display = "inline-block";
+            micBtn.disabled = false;
+            micBtn.innerText = "🎙️ Rakam Tepukan";
+            
+            document.getElementById("feedbackBox").innerHTML = "";
+            document.getElementById("meterContainer").style.display = "block";
+        }, 500);
     }
 
-
-    /* =========================================================
-       ROLL DICE
-       ========================================================= */
-
-    rollButton.addEventListener("click", function() {
-
-        dice.classList.remove("spin");
-
-        void dice.offsetWidth;
-
-        dice.classList.add("spin");
-
-
-        let count = 0;
-
-        const rollAnimation =
-            setInterval(function() {
-
-                const randomNumber =
-                    Math.floor(Math.random() * 6) + 1;
-
-                dice.innerHTML = randomNumber;
-
-                count++;
-
-                if (count >= 8) {
-
-                    clearInterval(rollAnimation);
-
-                    currentPattern =
-                        Number(dice.innerHTML);
-
-                    showPattern(currentPattern);
-
-                }
-
-            }, 100);
-
-    });
-
-
-    /* =========================================================
-       SHOW RHYTHM PATTERN
-       ========================================================= */
-
-    function showPattern(number) {
-
-        const pattern =
-            patterns[number];
-
-
-        rhythm.innerHTML =
-            pattern.symbols.join(" ");
-
-
-        rhythmNames.innerHTML =
-            "<b>" +
-            pattern.names.join(" + ") +
-            "</b>";
-
-
-        listenButton.disabled = false;
-
-        clapButton.disabled = false;
-
-        result.innerHTML = "";
-
-        score.innerHTML = "";
-
-        status.innerHTML =
-            "Corak dipilih! Dengar corak dahulu atau terus cuba.";
-
-    }
-
-
-    /* =========================================================
-       PLAY RHYTHM
-       ========================================================= */
-
-    listenButton.addEventListener("click", async function() {
-
-        await createAudio();
-
-        if (!currentPattern) {
-            return;
-        }
-
-
-        const pattern =
-            patterns[currentPattern];
-
-
-        status.innerHTML =
-            "🔊 Contoh corak sedang dimainkan...";
-
-
-        const start =
-            audioContext.currentTime + 0.2;
-
-
-        /* Bunyi beat */
-
-        for (let i = 0; i < 4; i++) {
-
-            playSound(
-                start + i * (BEAT_TIME / 1000),
-                500
-            );
-
-        }
-
-
-        /* Bunyi ikut corak */
-
-        pattern.beats.forEach(function(beat) {
-
-            playSound(
-                start + beat * (BEAT_TIME / 1000),
-                900
-            );
-
-        });
-
-
-        setTimeout(function() {
-
-            status.innerHTML =
-                "Contoh selesai. Sekarang cuba tepuk.";
-
-        }, 4500);
-
-    });
-
-
-    /* =========================================================
-       PLAY SOUND
-       ========================================================= */
-
-    function playSound(time, frequency) {
-
-        const oscillator =
-            audioContext.createOscillator();
-
-
-        const gain =
-            audioContext.createGain();
-
-
-        oscillator.type = "sine";
-
-        oscillator.frequency.value =
-            frequency;
-
-
-        gain.gain.setValueAtTime(
-            0.0001,
-            time
-        );
-
-
-        gain.gain.exponentialRampToValueAtTime(
-            0.25,
-            time + 0.01
-        );
-
-
-        gain.gain.exponentialRampToValueAtTime(
-            0.0001,
-            time + 0.12
-        );
-
-
-        oscillator.connect(gain);
-
-        gain.connect(audioContext.destination);
-
-
-        oscillator.start(time);
-
-        oscillator.stop(time + 0.13);
-
-    }
-
-
-    /* =========================================================
-       START MICROPHONE
-       ========================================================= */
-
-    clapButton.addEventListener("click", async function() {
-
-        await startClapDetection();
-
-    });
-
-
-    async function startClapDetection() {
-
-        if (!currentPattern) {
-
-            alert(
-                "Sila baling dadu dahulu."
-            );
-
-            return;
-
-        }
-
+    async function startListening() {
+        const micBtn = document.getElementById("micBtn");
+        const feedbackBox = document.getElementById("feedbackBox");
+        const meterBar = document.getElementById("meterBar");
+        
+        micBtn.disabled = true;
+        micBtn.innerText = "⏳ Mendengar... Tepuk sekarang!";
+        feedbackBox.innerHTML = "";
 
         try {
-
-            await createAudio();
-
-
-            microphone =
-                await navigator.mediaDevices
-                .getUserMedia({
-
-                    audio: {
-
-                        echoCancellation: true,
-
-                        noiseSuppression: true,
-
-                        autoGainControl: true
-
-                    }
-
-                });
-
-
-        }
-
-        catch (error) {
-
-            status.innerHTML =
-                "❌ Mikrofon tidak dapat digunakan. " +
-                "Sila benarkan akses mikrofon.";
-
-            return;
-
-        }
-
-
-        const source =
-            audioContext.createMediaStreamSource(
-                microphone
-            );
-
-
-        analyser =
-            audioContext.createAnalyser();
-
-
-        analyser.fftSize = 1024;
-
-        analyser.smoothingTimeConstant =
-            0.1;
-
-
-        source.connect(analyser);
-
-
-        recording = true;
-
-        clapTimes = [];
-
-        lastClapTime = 0;
-
-        startTime =
-            performance.now();
-
-
-        clapButton.disabled = true;
-
-        rollButton.disabled = true;
-
-        listenButton.disabled = true;
-
-
-        status.innerHTML =
-            "🎙️ 3... 2... 1... MULA! " +
-            "Tepuk ikut corak.";
-
-
-        detectClaps();
-
-
-        setTimeout(function() {
-
-            stopDetection();
-
-        }, 4500);
-
-    }
-
-
-    /* =========================================================
-       DETECT CLAP
-       ========================================================= */
-
-    function detectClaps() {
-
-        if (!recording) {
-
-            return;
-
-        }
-
-
-        const data =
-            new Float32Array(
-                analyser.fftSize
-            );
-
-
-        analyser.getFloatTimeDomainData(
-            data
-        );
-
-
-        let sum = 0;
-
-        let peak = 0;
-
-
-        for (let i = 0; i < data.length; i++) {
-
-            sum += data[i] * data[i];
-
-            peak =
-                Math.max(
-                    peak,
-                    Math.abs(data[i])
-                );
-
-        }
-
-
-        const rms =
-            Math.sqrt(
-                sum / data.length
-            );
-
-
-        const now =
-            performance.now();
-
-
-        const elapsed =
-            now - startTime;
-
-
-        /*
-           Di sini sistem cuba mengenal pasti
-           bunyi tepukan berdasarkan bunyi yang
-           tiba-tiba menjadi kuat.
-        */
-
-        if (
-
-            elapsed > 800 &&
-
-            elapsed < 4300 &&
-
-            rms > 0.08 &&
-
-            peak > 0.22 &&
-
-            now - lastClapTime > 180
-
-        ) {
-
-            clapTimes.push(elapsed);
-
-            lastClapTime = now;
-
-        }
-
-
-        const progress =
-            Math.min(
-                100,
-                Math.max(
-                    0,
-                    ((elapsed - 800) / 3500) * 100
-                )
-            );
-
-
-        progressBar.style.width =
-            progress + "%";
-
-
-        animationID =
-            requestAnimationFrame(
-                detectClaps
-            );
-
-    }
-
-
-    /* =========================================================
-       STOP MICROPHONE DETECTION
-       ========================================================= */
-
-    function stopDetection() {
-
-        if (!recording) {
-
-            return;
-
-        }
-
-
-        recording = false;
-
-
-        cancelAnimationFrame(
-            animationID
-        );
-
-
-        if (microphone) {
-
-            microphone
-                .getTracks()
-                .forEach(function(track) {
-
-                    track.stop();
-
-                });
-
-            microphone = null;
-
-        }
-
-
-        clapButton.disabled = false;
-
-        rollButton.disabled = false;
-
-        listenButton.disabled = false;
-
-
-        progressBar.style.width =
-            "100%";
-
-
-        checkRhythm();
-
-    }
-
-
-    /* =========================================================
-       CHECK RHYTHM
-       ========================================================= */
-
-    function checkRhythm() {
-
-        const expected =
-            patterns[currentPattern].beats;
-
-
-        if (clapTimes.length === 0) {
-
-            result.innerHTML =
-                "❌ CUBA LAGI";
-
-            score.innerHTML =
-                "Tiada tepukan dikesan.";
-
-            status.innerHTML =
-                "Sila cuba sekali lagi.";
-
-            saveAttempt(0, false);
-
-            return;
-
-        }
-
-
-        /*
-           Jadikan tepukan pertama sebagai
-           titik permulaan.
-        */
-
-        const firstClap =
-            clapTimes[0];
-
-
-        const normalizedClaps =
-            clapTimes.map(function(time) {
-
-                return time - firstClap;
-
-            });
-
-
-        let matched = 0;
-
-
-        for (
-            let i = 0;
-            i < expected.length;
-            i++
-        ) {
-
-
-            const expectedTime =
-                expected[i] * BEAT_TIME;
-
-
-            let closestDifference =
-                Infinity;
-
-
-            for (
-                let j = 0;
-                j < normalizedClaps.length;
-                j++
-            ) {
-
-                const difference =
-                    Math.abs(
-                        normalizedClaps[j]
-                        - expectedTime
-                    );
-
-
-                if (
-                    difference
-                    < closestDifference
-                ) {
-
-                    closestDifference =
-                        difference;
-
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const analyser = audioContext.createAnalyser();
+            const microphone = audioContext.createMediaStreamSource(stream);
+            
+            analyser.fftSize = 1024;
+            microphone.connect(analyser);
+            
+            const bufferLength = analyser.fftSize;
+            const dataArray = new Float32Array(bufferLength);
+            
+            let clapsDetected = 0;
+            let lastClapTime = 0;
+            let isRunning = true;
+
+            // Algoritma Pengesanan Transient RMS Lanjutan
+            const checkAudio = () => {
+                if (!isRunning) return;
+                
+                analyser.getFloatTimeDomainData(dataArray);
+                
+                // Kira tenaga RMS (Root Mean Square) gelombang audio
+                let sumSquares = 0;
+                for (let i = 0; i < bufferLength; i++) {
+                    sumSquares += dataArray[i] * dataArray[i];
+                }
+                let rms = Math.sqrt(sumSquares / bufferLength);
+                
+                // Paparkan tahap volum secara langsung pada meter bar (skala 0-100%)
+                let volumePercent = Math.min(100, Math.round(rms * 400));
+                meterBar.style.width = volumePercent + "%";
+
+                let now = Date.now();
+                
+                // Ambang RMS pintar untuk tepukan (0.12 menunjukkan letupan tenaga tepukan tangan yang jelas)
+                // Jeda masa 200ms menghalang gema dikesan berulang kali
+                if (rms > 0.12 && (now - lastClapTime) > 200) {
+                    clapsDetected++;
+                    lastClapTime = now;
+                    micBtn.innerText = `⏳ Dikesan: ${clapsDetected} tepukan...`;
                 }
 
-            }
+                requestAnimationFrame(checkAudio);
+            };
 
+            checkAudio();
 
-            if (
-                closestDifference
-                <= TOLERANCE
-            ) {
+            // Rakam selama 4 saat penuh
+            setTimeout(() => {
+                isRunning = false;
+                stream.getTracks().forEach(track => track.stop());
+                audioContext.close();
 
-                matched++;
+                micBtn.disabled = false;
+                micBtn.innerText = "🎙️ Rakam Semula";
+                meterBar.style.width = "0%";
 
-            }
+                let target = currentPattern.targetClaps;
+                let isCorrect = false;
 
+                // Penilaian ketat dan adil
+                if (target === 1) {
+                    isCorrect = (clapsDetected === 1);
+                } else if (target === 2) {
+                    isCorrect = (clapsDetected === 2);
+                } else if (target === 3) {
+                    isCorrect = (clapsDetected === 3);
+                } else if (target === 4) {
+                    isCorrect = (clapsDetected >= 3 && clapsDetected <= 5);
+                } else if (target === 6) {
+                    isCorrect = (clapsDetected >= 5 && clapsDetected <= 7);
+                } else if (target === 8) {
+                    isCorrect = (clapsDetected >= 7 && clapsDetected <= 9);
+                }
+
+                if (isCorrect) {
+                    feedbackBox.innerHTML = `<div class="feedback success">🎉 Tahniah! Tepukan Betul & Tepat! (${clapsDetected} tepukan dikesan)</div>`;
+                } else {
+                    feedbackBox.innerHTML = `<div class="feedback try-again">⚠️ Dikesan ${clapsDetected} tepukan. Sasaran tepat ialah ${target} tepukan. Cuba Lagi!</div>`;
+                }
+            }, 4000);
+
+        } catch (err) {
+            alert("Sila benarkan akses mikrofon (Allow Microphone) pada pelayar anda!");
+            micBtn.disabled = false;
+            micBtn.innerText = "🎙️ Rakam Tepukan";
         }
-
-
-        let percentage =
-            Math.round(
-                (matched /
-                expected.length) *
-                100
-            );
-
-
-        /*
-           Kalau jumlah tepukan terlalu banyak,
-           tolak markah sedikit.
-        */
-
-        if (
-            normalizedClaps.length
-            > expected.length
-        ) {
-
-            percentage -= 10;
-
-        }
-
-
-        if (percentage < 0) {
-
-            percentage = 0;
-
-        }
-
-
-        if (percentage >= 75) {
-
-            result.innerHTML =
-                "✅ BETUL!";
-
-            score.innerHTML =
-                "Markah: " +
-                percentage +
-                "%";
-
-
-            status.innerHTML =
-                "Tahniah! Anda berjaya menepuk " +
-                "corak dengan betul. 🎉";
-
-
-            saveAttempt(
-                percentage,
-                true
-            );
-
-        }
-
-        else {
-
-            result.innerHTML =
-                "❌ CUBA LAGI";
-
-            score.innerHTML =
-                "Markah: " +
-                percentage +
-                "%";
-
-
-            status.innerHTML =
-                "Belum tepat. " +
-                "Dengar corak sekali lagi dan cuba.";
-
-            saveAttempt(
-                percentage,
-                false
-            );
-
-        }
-
     }
-
-
-    /* =========================================================
-       SAVE ATTEMPT
-       ========================================================= */
-
-    function saveAttempt(
-        percentage,
-        correct
-    ) {
-
-
-        attemptHistory.unshift({
-
-            pattern:
-                currentPattern,
-
-            score:
-                percentage,
-
-            correct:
-                correct
-
-        });
-
-
-        if (
-            attemptHistory.length
-            > 10
-        ) {
-
-            attemptHistory.pop();
-
-        }
-
-
-        displayHistory();
-
-    }
-
-
-    /* =========================================================
-       DISPLAY HISTORY
-       ========================================================= */
-
-    function displayHistory() {
-
-        history.innerHTML = "";
-
-
-        attemptHistory.forEach(
-            function(item, index) {
-
-
-                const div =
-                    document.createElement("div");
-
-
-                div.className =
-                    "historyItem";
-
-
-                div.innerHTML =
-
-                    "Percubaan " +
-                    (index + 1) +
-
-                    " | Dadu: " +
-                    item.pattern +
-
-                    " | Markah: " +
-                    item.score +
-                    "% | " +
-
-                    (
-                        item.correct
-                        ? "✅ Betul"
-                        : "❌ Cuba Lagi"
-                    );
-
-
-                history.appendChild(div);
-
-            }
-        );
-
-    }
-
 </script>
 
 </body>
