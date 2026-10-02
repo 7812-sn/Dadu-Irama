@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dadu Irama – Clap & Check</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f7fb;
+    color: #1f2937;
+  }
+  .wrap {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+  .card {
+    background: white;
+    border-radius: 18px;
+    padding: 22px;
+    margin-bottom: 18px;
+    box-shadow: 0 8px 25px rgba(0,0,0,.08);
+  }
+  h1 { margin-top: 0; }
+  .sub { color: #6b7280; }
+  .row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  button {
+    border: 0;
+    border-radius: 12px;
+    padding: 12px 18px;
+    font-size: 16px;
+    cursor: pointer;
+    background: #111827;
+    color: white;
+  }
+  button.secondary { background: #e5e7eb; color: #111827; }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+  .dice-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 150px;
+    margin: 10px 0 18px;
+  }
+  .dice {
+    width: 100px;
+    height: 100px;
+    border-radius: 18px;
+    display: grid;
+    place-items: center;
+    background: #111827;
+    color: white;
+    font-size: 52px;
+    font-weight: 700;
+  }
+  .dice.spin {
+    animation: spin .65s ease-in-out;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.15); }
+    100% { transform: rotate(360deg) scale(1); }
+  }
+  .pattern {
+    font-size: 36px;
+    letter-spacing: 10px;
+    text-align: center;
+    padding: 20px 10px 8px;
+    min-height: 80px;
+  }
+  .labels {
+    text-align: center;
+    font-size: 18px;
+    color: #374151;
+    line-height: 1.7;
+  }
+  .status {
+    margin-top: 14px;
+    padding: 12px;
+    border-radius: 10px;
+    background: #f3f4f6;
+  }
+  .result {
+    font-size: 24px;
+    font-weight: 700;
+  }
+  .small { font-size: 14px; color: #6b7280; }
+  .countdown {
+    font-size: 42px;
+    text-align: center;
+    font-weight: 800;
+    margin: 10px;
+  }
+  .meter {
+    height: 12px;
+    background: #e5e7eb;
+    border-radius: 999px;
+    overflow: hidden;
+    margin: 12px 0;
+  }
+  .meter > div {
+    height: 100%;
+    width: 0%;
+    background: #111827;
+    transition: width .05s linear;
+  }
+  .history-item {
+    border-top: 1px solid #e5e7eb;
+    padding: 10px 0;
+  }
+  .badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    background: #e5e7eb;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <h1>🎲 Dadu Irama – Clap & Check</h1>
+    <p class="sub">
+      Aktiviti muzik untuk murid sekolah rendah: baling dadu, lihat satu bar corak irama,
+      dengar contoh, kemudian tepuk. Sistem membuat semakan automatik berdasarkan masa tepukan.
+    </p>
+
+    <div class="row">
+      <button id="startBtn">Mula</button>
+      <button id="rollBtn" disabled>Baling Dadu</button>
+      <button id="playBtn" class="secondary" disabled>▶ Dengar Corak</button>
+      <button id="clapBtn" disabled>🎙️ Mula Tepuk</button>
+    </div>
+
+    <div class="dice-area">
+      <div id="dice" class="dice">?</div>
+    </div>
+
+    <div class="small">Tempo aktiviti: 60 BPM • 1 bar = 4 beat</div>
+    <div id="countdown" class="countdown"></div>
+  </div>
+
+  <div class="card">
+    <h2>Corak Irama</h2>
+    <div id="pattern" class="pattern">Baling dadu dahulu.</div>
+    <div id="labels" class="labels"></div>
+  </div>
+
+  <div class="card">
+    <h2>Semakan Tepukan</h2>
+    <div class="small">Benarkan akses mikrofon apabila pelayar memintanya.</div>
+    <div class="meter"><div id="meterBar"></div></div>
+    <div id="status" class="status">Belum bermula.</div>
+    <div id="result"></div>
+  </div>
+
+  <div class="card">
+    <h2>Rekod Percubaan</h2>
+    <div id="history"><div class="small">Tiada percubaan lagi.</div></div>
+  </div>
+</div>
+
+<script>
+const patterns = {
+  1: {
+    symbols: ["𝅝"],
+    labels: ["Semibreve"],
+    beats: [0],
+    description: "Tepuk sekali pada permulaan bar dan tahan 4 beat."
+  },
+  2: {
+    symbols: ["𝅗𝅥", "𝅗𝅥"],
+    labels: ["Minim", "Minim"],
+    beats: [0, 2],
+    description: "Minim + Minim"
+  },
+  3: {
+    symbols: ["♩", "♩", "♩", "♩"],
+    labels: ["Crotchet", "Crotchet", "Crotchet", "Crotchet"],
+    beats: [0, 1, 2, 3],
+    description: "4 Crotchet"
+  },
+  4: {
+    symbols: ["𝅗𝅥", "♩", "♩"],
+    labels: ["Minim", "Crotchet", "Crotchet"],
+    beats: [0, 2, 3],
+    description: "Minim + Crotchet + Crotchet"
+  },
+  5: {
+    symbols: ["♩", "♪", "♪", "𝅗𝅥"],
+    labels: ["Crotchet", "Quaver", "Quaver", "Minim"],
+    beats: [0, 1, 1.5, 2],
+    description: "Crotchet + 2 Quaver + Minim"
+  },
+  6: {
+    symbols: ["♪", "♪", "♪", "♪", "𝅗𝅥", "𝅗𝅥"],
+    labels: ["Quaver", "Quaver", "Quaver", "Quaver", "Minim", "Minim"],
+    beats: [0, 0.5, 1, 1.5, 2, 3],
+    description: "4 Quaver + 2 Minim"
+  }
+};
+
+let current = null;
+let audioContext = null;
+let micStream = null;
+let analyser = null;
+let recording = false;
+let clapTimes = [];
+let startedAt = 0;
+let raf = null;
+let lastClapAt = -Infinity;
+let history = [];
+
+const $ = (id) => document.getElementById(id);
+const BPM = 60;
+const BEAT_MS = 60000 / BPM;
+const TOLERANCE_MS = 320;
+
+function renderPattern(num) {
+  const p = patterns[num];
+  $("pattern").textContent = p.symbols.join("   ");
+  $("labels").innerHTML =
+    `<strong>${p.description}</strong><br>` +
+    p.labels.map((x, i) => `${i + 1}. ${x}`).join(" • ");
+}
+
+$("startBtn").addEventListener("click", async () => {
+  $("startBtn").disabled = true;
+  $("rollBtn").disabled = false;
+  $("status").textContent = "Aktiviti bermula. Baling dadu untuk dapatkan corak.";
+  await ensureAudio();
+});
+
+$("rollBtn").addEventListener("click", () => {
+  const dice = $("dice");
+  dice.classList.remove("spin");
+  void dice.offsetWidth;
+  dice.classList.add("spin");
+
+  let count = 0;
+  const timer = setInterval(() => {
+    dice.textContent = 1 + Math.floor(Math.random() * 6);
+    count++;
+    if (count >= 8) {
+      clearInterval(timer);
+      current = Number(dice.textContent);
+      renderPattern(current);
+      $("playBtn").disabled = false;
+      $("clapBtn").disabled = false;
+      $("status").textContent = "Corak dipilih. Dengar contoh dahulu atau terus cuba tepuk.";
+      $("result").innerHTML = "";
+    }
+  }, 80);
+});
+
+$("playBtn").addEventListener("click", async () => {
+  await ensureAudio();
+  if (!current) return;
+
+  $("status").textContent = "Contoh sedang dimainkan…";
+  $("countdown").textContent = "Dengar…";
+  const p = patterns[current];
+
+  // Count-in + target rhythm. A short click is played at each expected clap.
+  const start = audioContext.currentTime + 0.15;
+
+  for (let i = 0; i < 4; i++) {
+    playClick(start + i * (BEAT_MS/1000), 600);
+  }
+  p.beats.forEach(b => {
+    playClick(start + b * (BEAT_MS/1000), 900);
+  });
+
+  setTimeout(() => {
+    $("status").textContent = "Contoh selesai.";
+    $("countdown").textContent = "";
+  }, 4500);
+});
+
+$("clapBtn").addEventListener("click", async () => {
+  if (recording) return;
+  await startClapCheck();
+});
+
+async function ensureAudio() {
+  if (!audioContext) {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioContext.state === "suspended") await audioContext.resume();
+}
+
+async function startClapCheck() {
+  await ensureAudio();
+
+  if (!navigator.mediaDevices?.getUserMedia) {
+    $("status").textContent = "Pelayar ini tidak menyokong akses mikrofon.";
+    return;
+  }
+
+  try {
+    micStream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true
+      }
+    });
+  } catch (e) {
+    $("status").textContent = "Akses mikrofon ditolak. Sila benarkan mikrofon dan cuba lagi.";
+    return;
+  }
+
+  const source = audioContext.createMediaStreamSource(micStream);
+  analyser = audioContext.createAnalyser();
+  analyser.fftSize = 1024;
+  analyser.smoothingTimeConstant = 0.1;
+  source.connect(analyser);
+
+  recording = true;
+  clapTimes = [];
+  lastClapAt = -Infinity;
+  startedAt = performance.now();
+  $("clapBtn").textContent = "🎙️ Mendengar…";
+  $("playBtn").disabled = true;
+  $("rollBtn").disabled = true;
+  $("status").textContent = "3… 2… 1… GO! Tepuk ikut corak.";
+  $("result").innerHTML = "";
+
+  setTimeout(() => {
+    $("countdown").textContent = "";
+  }, 1000);
+
+  detectLoop();
+  setTimeout(stopClapCheck, 4600);
+}
+
+function detectLoop() {
+  if (!recording) return;
+
+  const data = new Float32Array(analyser.fftSize);
+  analyser.getFloatTimeDomainData(data);
+
+  let sum = 0;
+  let peak = 0;
+  for (const x of data) {
+    sum += x * x;
+    peak = Math.max(peak, Math.abs(x));
+  }
+  const rms = Math.sqrt(sum / data.length);
+
+  // Simple prototype clap detector:
+  // a clap is treated as a short, sudden loud transient.
+  const now = performance.now();
+  const sinceStart = now - startedAt;
+  const canDetect = sinceStart > 900 && sinceStart < 4300;
+
+  if (canDetect && rms > 0.08 && peak > 0.22 && now - lastClapAt > 180) {
+    clapTimes.push(sinceStart);
+    lastClapAt = now;
+  }
+
+  const progress = Math.min(100, Math.max(0, (sinceStart - 900) / 3400 * 100));
+  $("meterBar").style.width = progress + "%";
+  raf = requestAnimationFrame(detectLoop);
+}
+
+function stopClapCheck() {
+  if (!recording) return;
+  recording = false;
+  cancelAnimationFrame(raf);
+
+  if (micStream) {
+    micStream.getTracks().forEach(t => t.stop());
+    micStream = null;
+  }
+
+  $("clapBtn").textContent = "🎙️ Mula Tepuk";
+  $("playBtn").disabled = false;
+  $("rollBtn").disabled = false;
+  $("meterBar").style.width = "100%";
+
+  const score = compareRhythm(patterns[current].beats, clapTimes);
+  showResult(score);
+  addHistory(score);
+}
+
+function compareRhythm(expectedBeats, detectedMs) {
+  // The activity starts assessing from roughly 0.9 sec.
+  // We allow the child a natural lead-in by using the first detected clap as the
+  // reference point for the sequence. This also makes the demo less sensitive
+  // to pressing the button a fraction too early/late.
+  const expected = expectedBeats.map(b => b * BEAT_MS);
+
+  if (detectedMs.length === 0) {
+    return { ok: false, percent: 0, message: "Tiada tepukan dikesan.", detected: [] };
+  }
+
+  const first = detectedMs[0];
+  const normalized = detectedMs.map(t => t - first);
+  const matches = [];
+  const used = new Set();
+
+  for (let i = 0; i < expected.length; i++) {
+    let best = -1;
+    let bestDiff = Infinity;
+    for (let j = 0; j < normalized.length; j++) {
+      if (used.has(j)) continue;
+      const diff = Math.abs(normalized[j] - expected[i]);
+      if (diff < bestDiff) {
+        bestDiff = diff;
+        best = j;
+      }
+    }
+    if (best !== -1 && bestDiff <= TOLERANCE_MS) {
+      matches.push(bestDiff);
+      used.add(best);
+    }
+  }
+
+  const timingScore = matches.length / expected.length;
+  const countPenalty = Math.abs(detectedMs.length - expected.length) * 0.10;
+  const percent = Math.max(0, Math.min(100, Math.round((timingScore - countPenalty) * 100)));
+  const ok = percent >= 75 && matches.length === expected.length;
+
+  let message;
+  if (ok) {
+    message = "Betul! Corak tepukan sepadan dengan corak irama.";
+  } else if (matches.length === expected.length) {
+    message = "Hampir betul. Cuba tepuk ikut jarak beat dengan lebih tepat.";
+  } else {
+    message = "Belum tepat. Dengar contoh sekali lagi dan cuba semula.";
+  }
+
+  return { ok, percent, message, detected: detectedMs, expected };
+}
+
+function showResult(score) {
+  $("status").textContent = "Semakan selesai.";
+  $("result").innerHTML = `
+    <p class="result">${score.ok ? "✅ BETUL" : "❌ CUBA LAGI"} — ${score.percent}%</p>
+    <p>${score.message}</p>
+    <p class="small">Tepukan dikesan: ${score.detected.length} • Tepukan sasaran: ${patterns[current].beats.length}</p>
+  `;
+}
+
+function addHistory(score) {
+  history.unshift({
+    pattern: current,
+    score: score.percent,
+    result: score.ok ? "Betul" : "Cuba lagi"
+  });
+  history = history.slice(0, 10);
+
+  $("history").innerHTML = history.map((h, i) => `
+    <div class="history-item">
+      Percubaan ${history.length - i}:
+      <span class="badge">Dadu ${h.pattern}</span>
+      <span class="badge">${h.result}</span>
+      <span class="badge">${h.score}%</span>
+    </div>
+  `).join("");
+}
+
+function playClick(time, freq) {
+  const osc = audioContext.createOscillator();
+  const gain = audioContext.createGain();
+  osc.type = "sine";
+  osc.frequency.value = freq;
+  gain.gain.setValueAtTime(0.0001, time);
+  gain.gain.exponentialRampToValueAtTime(0.18, time + 0.005);
+  gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.08);
+  osc.connect(gain);
+  gain.connect(audioContext.destination);
+  osc.start(time);
+  osc.stop(time + 0.09);
+}
+</script>
+</body>
+</html>
